@@ -5,40 +5,35 @@ using UnityEngine;
 public class LineColliderController : MonoBehaviour {
 
     List<GameObject> collisions;
-    GameObject otherCol1;
-    GameObject otherCol2;
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    GameObject lineCollision;
+    GameObject self;
+
+    public void SetSelf(GameObject obj)
+    {
+        self = obj;
+    }
+
+    public void SetCollision(GameObject col)
+    {
+        lineCollision = col;
+    }
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log("Line collided with " + col.name);
-        bool lineCollided = CheckCollision(this.gameObject, col.gameObject);
+        
+        if(col.tag == "StandardCharacter" || col.tag == "BeautifulCharacter")
+        {
+            Debug.Log("Line collided with " + col.tag);
+            lineCollision = col.gameObject;
+        }
     }
 
-    private bool CheckCollision(GameObject col1, GameObject col2)
+    public bool CheckCollision()
     {
-        if(col1 == otherCol1)
+        if(lineCollision == self || lineCollision == null)
         {
-            if(col2 == otherCol2)
-            {
-                return true;
-            }
+            return false;
         }
-
-        else if(col1 == otherCol2)
-        {
-            if(col2 == otherCol1)
-            {
-                return true;
-            }
-        }
-        return false;
+        return true;
     }
 }

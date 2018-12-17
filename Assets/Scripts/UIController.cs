@@ -5,8 +5,15 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour {
     public Text text_score;
-	public void UpdateTextScore(int score)
+    public Text text_gameover;
+
+    public void UpdateTextScore(int score)
     {
         text_score.text = "Score " + score;
+    }
+
+    public void DisplayGameover(string text)
+    {
+        text_gameover.text = text;
     }
 }

@@ -13,22 +13,68 @@ public class MatchCharacterController : MonoBehaviour {
     public LevelManager lvlManger;
     private float offset;
     private bool rmouseClick;
+    private bool thisObjSelected;
+    private bool isMatching;
+    private GameObject matchStartObject;
+    private GameObject currentRadiusCollision;
+    public float meetFriendsRange = 6;
+    public LayerMask whatIsFriends;
+    private Color myColour;
 
     void Start ()
     {
         movementScript = GetComponent<CharacterMovementController>();
         connections = new List<GameObject>();
-        lineDrawer = GameObject.FindGameObjectWithTag("LineDrawer").GetComponent<SliceDrawer>();
- 
         createdCharacter = GetComponent<CharacterCreation>();
         lvlManger = GameObject.Find("GameManager").GetComponent<LevelManager>();
         numberOfMatches = 0;
-        offset = 0.05f;
+        offset = 20f;
         rmouseClick = false;
+        isMatching = false;
+        thisObjSelected = false;
+        myColour = Random.ColorHSV();
+        while (myColour.g < 0.3)
+        {
+            myColour = Random.ColorHSV();
+        }
     }
+
 	void Update ()
     {
-        if(numberOfMatches >= 1 && connections.Count >= 1)
+        if(lvlManger.lastObjectSelected != null && lvlManger.lastObjectSelected.GetComponent< SpringJoint2D>() == null)
+        {
+           
+            lvlManger.lastObjectSelected.GetComponent<SpriteRenderer>().color = Color.yellow;
+
+        }
+
+        if (this.gameObject == lvlManger.lastObjectSelected)
+        {
+
+            Collider2D[] currentCols = Physics2D.OverlapCircleAll(transform.position, meetFriendsRange, whatIsFriends);
+            for (int col = 0; col < currentCols.Length; col++)
+            {
+
+                if (currentCols[col].gameObject.tag == "MatchingRadius")
+                {
+                    if (this.gameObject == currentCols[col].gameObject.transform.parent.gameObject)
+                    {
+                        continue;
+                    }
+                    Transform parentTransform = currentCols[col].gameObject.transform.parent.transform;
+                    if (Input.GetMouseButtonDown(1) && ((Camera.main.ScreenToWorldPoint(Input.mousePosition) - parentTransform.position).magnitude <= offset))
+                    {
+                        if (GetComponent<SpringJoint2D>() == null)
+                        {
+                            Connect(currentCols[col].gameObject.transform.parent.gameObject);
+                        }
+
+                    }
+                }
+            }
+        }
+
+        if (numberOfMatches >= 1 && connections.Count >= 1)
         {
             Destroy(this.gameObject);
             for(int i = 0; i < connections.Count; i ++)
@@ -37,34 +83,25 @@ public class MatchCharacterController : MonoBehaviour {
             }
         }
 
-        CheckForMatchInput();
-    }
-
-    bool CheckForMatchInput()
-    {
-        if (Input.GetMouseButtonDown(1))
+        for (int i = 0; i < connections.Count; i++)
         {
-            Debug.Log("Clicked Meeee!");
-            rmouseClick = true;
-            return rmouseClick;
+            if(connections[i] == null)
+            {
+                continue;
+            }
+            DrawLine(connections[i].GetComponent<Collider2D>());
         }
-        rmouseClick = false;
-        return rmouseClick;
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log(col.gameObject.tag + " : " + gameObject.name + " : " + Time.time);
-        // TODO remove
-        if(col.gameObject.tag == "MatchingRadius")
+        if (col.gameObject.tag == "MatchingRadius")
         {
-            
+            this.GetComponent<LineRenderer>().enabled = true;
+            var line = GetComponent<LineRenderer>();
+            line.GetComponent<Renderer>().material.color = Color.white;
+            DrawLine(col);
         }
-        
-        this.GetComponent<LineRenderer>().enabled = true;
-        var line = GetComponent<LineRenderer>();
-        line.GetComponent<Renderer>().material.color = Color.white;
-        DrawLine(col);
     }
 
     private void DrawLine(Collider2D col)
@@ -81,52 +118,46 @@ public class MatchCharacterController : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D col)
     {
-        
-        var lr = this.GetComponent<LineRenderer>();
-        //lr.GetComponent<Renderer>().material.color = Color.yellow;
-        //lr.SetPosition(0, this.transform.position);
-        //lr.SetPosition(1, col.transform.position);
-        //Camera.main.ScreenToWorldPoint(Input.mousePosition) 
-        
-
         if (col.gameObject.tag == "MatchingRadius")
         {
-            CharacterMovementController mvScript = col.gameObject.transform.parent.GetComponent<CharacterMovementController>();
-            if(mvScript.isSelected)
-            {
-                mvScript.following = false;
-                lineDrawer.SetCanDrawLine(true);
-                lineDrawer.lineStartPoint = col.gameObject.transform.parent.transform.position;
-
-            }
-            
-            lineDrawer.SetCollision(this.gameObject, col.gameObject.transform.parent.gameObject);
-
-            if (GetComponent<SpringJoint2D>() == null && false)
-            {
-                SpringJoint2D connection = gameObject.AddComponent(typeof(SpringJoint2D)) as SpringJoint2D;
-                connection.connectedBody = col.transform.parent.GetComponent<Rigidbody2D>();
-                connection.anchor = new Vector2(0, 0);
-                connection.connectedAnchor = new Vector2(0, 0);
-                connection.distance = 30;
-                connection.enableCollision = true;
-                connection.frequency = 3.0f;
-                connection.autoConfigureDistance = false;
-                connection.dampingRatio = 1;
-    
-                // Add each other to connections list
-                MatchCharacterController otherMatchController = col.gameObject.transform.parent.GetComponent<MatchCharacterController>();
-                if (!otherMatchController.connections.Contains(this.gameObject)) otherMatchController.connections.Add(this.gameObject);
-                if(!this.connections.Contains(col.transform.parent.gameObject)) this.connections.Add(col.transform.parent.gameObject);
-                Debug.Log(this.gameObject.name+" connection added to" + col.gameObject.transform.parent.name);
-
-                // Score the match
-                CharacterCreation other = col.gameObject.transform.parent.GetComponent<CharacterCreation>();
-                ScoreMatch(other);
-            }
-            
+            DrawLine(col);
         }
+    }
 
+    private void Connect(GameObject obj)
+    {
+        // add connection
+        SpringJoint2D connection1 = gameObject.AddComponent(typeof(SpringJoint2D)) as SpringJoint2D;
+        connection1.connectedBody = obj.GetComponent<Rigidbody2D>();
+        connection1.anchor = new Vector2(0, 0);
+        connection1.connectedAnchor = new Vector2(0, 0);
+        connection1.distance = 30;
+        connection1.enableCollision = true;
+        connection1.frequency = 3.0f;
+        connection1.autoConfigureDistance = false;
+        connection1.dampingRatio = 1;
+
+        SpringJoint2D connection2 = obj.AddComponent(typeof(SpringJoint2D)) as SpringJoint2D;
+        connection2.connectedBody = this.GetComponent<Rigidbody2D>();
+        connection2.anchor = new Vector2(0, 0);
+        connection2.connectedAnchor = new Vector2(0, 0);
+        connection2.distance = 30;
+        connection2.enableCollision = true;
+        connection2.frequency = 3.0f;
+        connection2.autoConfigureDistance = false;
+        connection2.dampingRatio = 1;
+
+        // Add each other to connections list
+        MatchCharacterController otherMatchController = obj.GetComponent<MatchCharacterController>();
+        if (!otherMatchController.connections.Contains(this.gameObject)) otherMatchController.connections.Add(this.gameObject);
+        if (!this.connections.Contains(obj)) this.connections.Add(obj);
+
+        // change colour to make a group
+        this.GetComponent<SpriteRenderer>().color = myColour;
+        obj.GetComponent<SpriteRenderer>().color = myColour;
+        // Score the match
+        CharacterCreation other = obj.GetComponent<CharacterCreation>();
+        ScoreMatch(other);
     }
 
     private int ScoreMatch(CharacterCreation other)
@@ -144,15 +175,22 @@ public class MatchCharacterController : MonoBehaviour {
                     this.numberOfMatches += 1;
                     other.gameObject.GetComponent<MatchCharacterController>().numberOfMatches += 1;
                     score = 10;
-                    lvlManger.UpdateScore(score);
+                    LevelManager.UpdateScore(score);
                 }
             }
         }
-        Debug.Log("score: " + score);
+
         if(matches == 0)
         {
-            lvlManger.UpdateScore(-10);
+            LevelManager.UpdateScore(-10);
         }
         return score;
     }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, meetFriendsRange);
+    }
+
 }

@@ -15,8 +15,8 @@ public class CharacterMovementController : MonoBehaviour {
     private float CLAMP_OFFSET;
     private Vector4 HIGHLIGHT_COLOUR = new Vector4(1, 1, 0, 255);
     private Vector4 OFF_COLOUR = new Vector4(1, 1, 0, 0); // turn off alpha
-
-
+    public LevelManager lvlManger;
+    public Color originalCol;
 
     // Use this for initialization
     void Start()
@@ -29,11 +29,18 @@ public class CharacterMovementController : MonoBehaviour {
         CLAMP_X = player_width / Screen.width;
         CLAMP_Y = player_height / Screen.height;
         CLAMP_OFFSET = 0.015f;
+        lvlManger = GameObject.Find("GameManager").GetComponent<LevelManager>();
+        originalCol = gameObject.GetComponent<SpriteRenderer>().color;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(LevelManager.isGameover)
+        {
+            following = false;
+            return;
+        }
         if (Input.GetMouseButtonDown(0) && ((Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).magnitude <= offset))
         {
             if (following)
@@ -55,6 +62,17 @@ public class CharacterMovementController : MonoBehaviour {
         if (following)
         {
             isSelected = true;
+            GameObject cacheLastSelected = lvlManger.lastObjectSelected;
+            lvlManger.lastObjectSelected = this.gameObject;
+            if (cacheLastSelected != lvlManger.lastObjectSelected)
+            {
+               
+                if (cacheLastSelected!= null && cacheLastSelected.GetComponent<SpringJoint2D>() == null)
+                {
+                    cacheLastSelected.GetComponent<SpriteRenderer>().color = cacheLastSelected.GetComponent<CharacterMovementController>().originalCol;
+                }
+            }
+            
             transform.position = Vector2.Lerp(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition), moveSpeed);
             List<GameObject> bobbleHighlight = FindOutline("BobbleOutline");
             if(bobbleHighlight.Count > 0)
