@@ -57,13 +57,12 @@ public class CharacterCreation : MonoBehaviour {
     {
         int enumLength = CharacterType.GetNames(typeof(CharacterType)).Length;
         int random = Random.Range(0, 100);
-
         if (random < 60)
         {
             return CharacterType.Standard;
         }
 
-        if (random > 60 & random < 80)
+        if (random > 60 & random < 70)
         {
             return CharacterType.Beautiful;
         }

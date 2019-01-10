@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using System.IO;
 
 public class LevelManager : MonoBehaviour {
-
+    [SerializeField]
     private static UIController uiUpdater;
     private static int score = 0;
     public GameObject lastObjectSelected;
@@ -53,6 +53,10 @@ public class LevelManager : MonoBehaviour {
 
     public static void DisplayGameover(string text)
     {
+        if(uiUpdater == null)
+        {
+            Debug.Log("uiUpdater is null!!!!");
+        }
         uiUpdater.DisplayGameover(text);
     }
 

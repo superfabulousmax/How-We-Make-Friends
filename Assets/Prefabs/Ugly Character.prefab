@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4259526737781046}
   - component: {fileID: 212046288199029274}
   - component: {fileID: 58935102736263306}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Matching Radius
   m_TagString: MatchingRadius
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4428664287256752}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Timer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 58607538035387860}
   - component: {fileID: 120252728515712186}
   - component: {fileID: 114627402850586090}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ugly Character
   m_TagString: UglyCharacter
   m_Icon: {fileID: 0}
@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 224146971199808868}
   - component: {fileID: 23518427047112728}
   - component: {fileID: 102002314513403600}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Timer text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -614,6 +614,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a6d8e4274c7e3147864491ed8d4ee49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeBtwnPointerClicks: 1.5
+  numberOfGivenClicks: 0
   timerText: {fileID: 102002314513403600}
 --- !u!114 &114800981498409160
 MonoBehaviour:
@@ -758,7 +760,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 625a5fd0edc077344a41b2b5d3680abf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -803,7 +805,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 871f9ef5a96c8fa47aedb355c0369d26, type: 3}
   m_Color: {r: 0.5700213, g: 0.9433962, b: 0.5473478, a: 1}
   m_FlipX: 0
@@ -848,7 +850,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: d30b7c4cd9ff71540887e49af12a1064, type: 3}
   m_Color: {r: 0.963735, g: 1, b: 0, a: 0}
   m_FlipX: 0
