@@ -12,6 +12,12 @@ public class LevelManager : MonoBehaviour {
     public string[] allInterests;
     public List<Vector4> interestColours;
     public static bool isGameover = false;
+    public static int currentLevel = 1;
+    private static int nextLevel = 2;
+    private static int nextLevelScoreRequirement = 100;
+    private static int levelIncrement = 10;
+    private static int totalNumberOfLevels = 4;
+
     private void Awake()
     {
         allInterests = ReadInterestsToList();
@@ -21,6 +27,7 @@ public class LevelManager : MonoBehaviour {
     void Start()
     {
         uiUpdater = gameObject.GetComponent<UIController>();
+        uiUpdater.UpdateTextLevel(currentLevel);
     }
 
     private List<Vector4> GenerateRandomTextColours()
@@ -43,12 +50,28 @@ public class LevelManager : MonoBehaviour {
             Time.timeScale = 1f;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
+
+        if(score >= nextLevelScoreRequirement)
+        {
+            IncreaseLevel();
+        }
     }
 
     public static void UpdateScore(int amount)
     {
         score += amount;
         uiUpdater.UpdateTextScore(score);
+    }
+
+    public static void IncreaseLevel()
+    {
+        if (currentLevel < totalNumberOfLevels)
+        {
+            currentLevel += 1;
+            nextLevel += 1;
+            nextLevelScoreRequirement += levelIncrement;
+        }
+        uiUpdater.UpdateTextLevel(currentLevel);
     }
 
     public static void DisplayGameover(string text)

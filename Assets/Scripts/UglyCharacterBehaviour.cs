@@ -13,7 +13,10 @@ public class UglyCharacterBehaviour : MonoBehaviour, IPointerClickHandler, IPoin
     private int numberOfRequiredClicks = 2;
     [SerializeField]
     private int numberOfGivenClicks = 0;
+    [SerializeField]
+    private int destroyUglyPoints = 5;
     public TextMesh timerText;
+
 
     private void Update()
     {
@@ -30,7 +33,7 @@ public class UglyCharacterBehaviour : MonoBehaviour, IPointerClickHandler, IPoin
             {
                 if(numberOfGivenClicks >= numberOfRequiredClicks)
                 {
-                    Destroy(this.gameObject);
+                    DestroyUgly(destroyUglyPoints);
                 }
             }
         }
@@ -47,30 +50,31 @@ public class UglyCharacterBehaviour : MonoBehaviour, IPointerClickHandler, IPoin
 
     void OnTriggerStay2D(Collider2D col)
     {
+        float _timer = timer;
         if (col.tag == "StandardCharacter" || col.tag == "BeautifulCharacter")
         {
             timer += Time.deltaTime;
             timerText.text = "" + timer.ToString("0.00"); //2dp Number;
             if (timer > 4)
             {
-                timerText.text = "";
                 CharacterCreation.CreateCopyCharacter(CharacterCreation.CharacterType.Ugly, col.gameObject, this.gameObject);
-                Debug.Log("Infect Character");
-                timer = 0;
                 LevelManager.UpdateScore(-10);
+                ResetTimer();
             }
         }
+
     }
 
+    void ResetTimer()
+    {
+        timerText.text = "";
+        timer = 0;
+    }
     void OnTriggerExit2D(Collider2D col)
     {
         if(col.tag == "StandardCharacter"|| col.tag == "BeautifulCharacter")
         {
-            if (timer < 4)
-            {
-                timerText.text = "";
-                timer = 0;
-            }
+            ResetTimer();
         }
         
     }
@@ -100,12 +104,18 @@ public class UglyCharacterBehaviour : MonoBehaviour, IPointerClickHandler, IPoin
         {
             if (eventData.pointerPressRaycast.gameObject.tag == this.gameObject.tag)
             {
-                Destroy(this.gameObject);
+                DestroyUgly(destroyUglyPoints);
             }
 
         }
 
 
+    }
+
+    private void DestroyUgly(int points)
+    {
+        Destroy(this.gameObject);
+        LevelManager.UpdateScore(points);
     }
 
 }

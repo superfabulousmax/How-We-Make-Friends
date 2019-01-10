@@ -7,7 +7,7 @@ public class CharacterCreation : MonoBehaviour {
     private LevelManager lvlManager;
     private List<string> assignedInterests;
     private List<TextMesh> interestTexts;
-    public int numberOfMatchInterests = 2;
+    public int numberOfMatchInterests;
     public GameObject interestsContainer;
     public enum CharacterType { Standard, Beautiful, Ugly };
     public CharacterType myType;
@@ -17,16 +17,39 @@ public class CharacterCreation : MonoBehaviour {
     {
         lvlManager = GameObject.Find("GameManager").GetComponent<LevelManager>();
         interestTexts = new List<TextMesh>();
-        interestTexts.Capacity = numberOfMatchInterests;
-
-        for (int i = 0; i < numberOfMatchInterests; i++)
+        numberOfMatchInterests = LevelManager.currentLevel;
+        for (int i = 0; i < interestsContainer.transform.childCount; i++)
         {
-            interestTexts.Add(interestsContainer.transform.GetComponentsInChildren<TextMesh>()[i]);
+            if (i < numberOfMatchInterests)
+            {
+                interestsContainer.transform.GetChild(i).gameObject.SetActive(true);
+                interestTexts.Add(interestsContainer.transform.GetComponentsInChildren<TextMesh>()[i]);
+            }
+                
+            else interestsContainer.transform.GetChild(i).gameObject.SetActive(false);
+
         }
         
         assignedInterests = new List<string>();
-        numberOfMatchInterests = 2;
-        SetRandomInterest();
+        SetRandomInterest(0);
+    }
+
+    private void Update()
+    {
+        if(numberOfMatchInterests < LevelManager.currentLevel)
+        {
+            for (int i = numberOfMatchInterests; i < LevelManager.currentLevel; i++)
+            {
+                
+                interestsContainer.transform.GetChild(i).gameObject.SetActive(true);
+                interestTexts.Add(interestsContainer.transform.GetComponentsInChildren<TextMesh>()[i]);                
+                SetRandomInterest(numberOfMatchInterests);
+            }
+
+            numberOfMatchInterests = LevelManager.currentLevel;
+            //Animator animator = GetComponent<Animator>();
+            //animator.Play()
+        }
     }
 
     public List<string> GetAssignedInterests()
@@ -34,12 +57,12 @@ public class CharacterCreation : MonoBehaviour {
         return assignedInterests;
     }
 
-    public void SetRandomInterest()
+    public void SetRandomInterest(int start)
     {
         int pos = Random.Range(0, lvlManager.allInterests.Length);       
         string randomInterest = lvlManager.allInterests[pos];
         
-        for(int i = 0; i < interestTexts.Count; i++)
+        for(int i = start; i < interestTexts.Count; i++)
         {
             while(assignedInterests.Contains(randomInterest))
             {
