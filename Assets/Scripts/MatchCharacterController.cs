@@ -6,7 +6,6 @@ public class MatchCharacterController : MonoBehaviour {
 
     public CharacterMovementController movementScript;
     public List<GameObject> connections;
-    public SliceDrawer lineDrawer;
     private CharacterCreation createdCharacter;
     [HideInInspector]
     public int numberOfMatches;
@@ -50,17 +49,11 @@ public class MatchCharacterController : MonoBehaviour {
 
         if (this.gameObject == lvlManger.lastObjectSelected)
         {
-
             Collider2D[] currentCols = Physics2D.OverlapCircleAll(transform.position, meetFriendsRange, whatIsFriends);
             for (int col = 0; col < currentCols.Length; col++)
             {
-
                 if (currentCols[col].gameObject.tag == "MatchingRadius")
                 {
-                    if (this.gameObject == currentCols[col].gameObject.transform.parent.gameObject)
-                    {
-                        continue;
-                    }
                     Transform parentTransform = currentCols[col].gameObject.transform.parent.transform;
                     if (Input.GetMouseButtonDown(1) && ((Camera.main.ScreenToWorldPoint(Input.mousePosition) - parentTransform.position).magnitude <= offset))
                     {
@@ -124,7 +117,7 @@ public class MatchCharacterController : MonoBehaviour {
         }
     }
 
-    private void Connect(GameObject obj)
+    public void Connect(GameObject obj)
     {
         // add connection
         SpringJoint2D connection1 = gameObject.AddComponent(typeof(SpringJoint2D)) as SpringJoint2D;
@@ -141,11 +134,11 @@ public class MatchCharacterController : MonoBehaviour {
         connection2.connectedBody = this.GetComponent<Rigidbody2D>();
         connection2.anchor = new Vector2(0, 0);
         connection2.connectedAnchor = new Vector2(0, 0);
-        connection2.distance = 30;
+        connection2.distance = 10;
         connection2.enableCollision = true;
-        connection2.frequency = 3.0f;
+        connection2.frequency = 1.0f;
         connection2.autoConfigureDistance = false;
-        connection2.dampingRatio = 1;
+        connection2.dampingRatio = 0;
 
         // Add each other to connections list
         MatchCharacterController otherMatchController = obj.GetComponent<MatchCharacterController>();

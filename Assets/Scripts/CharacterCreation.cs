@@ -11,7 +11,12 @@ public class CharacterCreation : MonoBehaviour {
     public GameObject interestsContainer;
     public enum CharacterType { Standard, Beautiful, Ugly };
     public CharacterType myType;
-   
+    private float myInfectionTimer = 0;
+    [SerializeField]
+    private TextMesh timerText;
+    [SerializeField]
+    private CheckCollider collider;
+
 
     void Start()
     {
@@ -36,7 +41,8 @@ public class CharacterCreation : MonoBehaviour {
 
     private void Update()
     {
-        if(numberOfMatchInterests < LevelManager.currentLevel)
+        
+        if (numberOfMatchInterests < LevelManager.currentLevel)
         {
             for (int i = numberOfMatchInterests; i < LevelManager.currentLevel; i++)
             {
@@ -50,6 +56,19 @@ public class CharacterCreation : MonoBehaviour {
             //Animator animator = GetComponent<Animator>();
             //animator.Play()
         }
+        if(collider!=null)
+        {
+            if (collider.isEmpty && myInfectionTimer > 0)
+            {
+                SetTimer();
+            }
+        }
+            
+    }
+
+    public void UpdateInfectionTimer()
+    {
+        myInfectionTimer += Time.deltaTime;
     }
 
     public List<string> GetAssignedInterests()
@@ -114,4 +133,39 @@ public class CharacterCreation : MonoBehaviour {
     {
         return interestTexts;
     }
+
+    public void SetTimer(float time = 0, bool useMyTimer = false)
+    {
+        if (timerText == null)
+        {
+            return;
+        }
+
+        if(useMyTimer)
+        {
+            timerText.text = myInfectionTimer.ToString("0.00");
+        }
+        else
+        {
+            timerText.text = "";
+            myInfectionTimer = time;
+        }
+        
+    }
+
+    public float GetInfectedTimer()
+    {
+        return myInfectionTimer;
+    }
+
+    public bool IsInfected()
+    {
+        return myInfectionTimer > 4;
+    }
+
+    public CheckCollider GetCollider()
+    {
+        return collider;
+    }
 }
+

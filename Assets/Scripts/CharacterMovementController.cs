@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CharacterMovementController : MonoBehaviour {
+public class CharacterMovementController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+{
 
     public float moveSpeed = 30f;
     public float offset = 0.05f;
@@ -15,8 +17,11 @@ public class CharacterMovementController : MonoBehaviour {
     private float CLAMP_OFFSET;
     private Vector4 HIGHLIGHT_COLOUR = new Vector4(1, 1, 0, 255);
     private Vector4 OFF_COLOUR = new Vector4(1, 1, 0, 0); // turn off alpha
-    public LevelManager lvlManger;
+    private LevelManager lvlManger;
     public Color originalCol;
+    [SerializeField]
+    private int destroyUglyPoints = 5;
+    private Rigidbody2D rigidbody;
 
     // Use this for initialization
     void Start()
@@ -31,51 +36,53 @@ public class CharacterMovementController : MonoBehaviour {
         CLAMP_OFFSET = 0.015f;
         lvlManger = GameObject.Find("GameManager").GetComponent<LevelManager>();
         originalCol = gameObject.GetComponent<SpriteRenderer>().color;
+        rigidbody = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(LevelManager.isGameover)
+        if (LevelManager.isGameover)
         {
             following = false;
             return;
         }
-        if (Input.GetMouseButtonDown(0) && ((Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).magnitude <= offset))
-        {
-            if (following)
-            {
-                following = false;
-            }
-            else
-            {
-                following = true;
-            }
-        }
-        if(Input.GetMouseButtonUp(0))
-        {
-            if(following)
-            {
-                following = false;
-            }
-        }
+        //if (Input.GetMouseButtonDown(0) && ((Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).magnitude <= offset))
+        //{
+        //    if (following)
+        //    {
+        //        following = false;
+        //    }
+        //    else
+        //    {
+        //        following = true;
+        //    }
+        //}
+        //if (Input.GetMouseButtonUp(0))
+        //{
+        //    if (following)
+        //    {
+        //        following = false;
+        //    }
+        //}
         if (following)
         {
             isSelected = true;
-            GameObject cacheLastSelected = lvlManger.lastObjectSelected;
-            lvlManger.lastObjectSelected = this.gameObject;
-            if (cacheLastSelected != lvlManger.lastObjectSelected)
-            {
-               
-                if (cacheLastSelected!= null && cacheLastSelected.GetComponent<SpringJoint2D>() == null)
-                {
-                    cacheLastSelected.GetComponent<SpriteRenderer>().color = cacheLastSelected.GetComponent<CharacterMovementController>().originalCol;
-                }
-            }
-            
+            //GameObject cacheLastSelected = lvlManger.lastObjectSelected;
+            //lvlManger.lastObjectSelected = this.gameObject;
+            //if (cacheLastSelected != lvlManger.lastObjectSelected)
+            //{
+
+            //    if (cacheLastSelected != null && cacheLastSelected.GetComponent<SpringJoint2D>() == null)
+            //    {
+            //        cacheLastSelected.GetComponent<SpriteRenderer>().color = cacheLastSelected.GetComponent<CharacterMovementController>().originalCol;
+            //    }
+            //}
+            //heldObject.rigidbody.velocity = (mousePosition - heldObject.transform.position).normalized * desiredMoveSpeed;
+            //rigidbody.velocity = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized * moveSpeed;
             transform.position = Vector2.Lerp(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition), moveSpeed);
             List<GameObject> bobbleHighlight = FindOutline("BobbleOutline");
-            if(bobbleHighlight.Count > 0)
+            if (bobbleHighlight.Count > 0)
             {
                 GameObject outline_gameobj = bobbleHighlight[0];
                 outline_gameobj.GetComponent<SpriteRenderer>().color = HIGHLIGHT_COLOUR;
@@ -83,7 +90,7 @@ public class CharacterMovementController : MonoBehaviour {
             }
             else
             {
-               // Debug.Log("Bobble Highlight is null");
+                // Debug.Log("Bobble Highlight is null");
             }
 
         }
@@ -98,7 +105,7 @@ public class CharacterMovementController : MonoBehaviour {
             }
             else
             {
-               // Debug.Log("Bobble Highlight is null");
+                // Debug.Log("Bobble Highlight is null");
             }
         }
 
@@ -109,14 +116,14 @@ public class CharacterMovementController : MonoBehaviour {
         transform.position = Camera.main.ViewportToWorldPoint(pos);
     }
 
-    public  List<GameObject> FindOutline(string tag)
+    public List<GameObject> FindOutline(string tag)
     {
         List<GameObject> taggedGameObjects = new List<GameObject>();
 
         for (int i = 0; i < this.transform.childCount; i++)
         {
             Transform child = this.transform.GetChild(i);
-            if(child == this)
+            if (child == this)
             {
                 continue;
             }
@@ -127,6 +134,77 @@ public class CharacterMovementController : MonoBehaviour {
             }
         }
         return taggedGameObjects;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Debug.Log("OnPointerDown  " + eventData.pointerPressRaycast.gameObject.tag);
+
+        if (eventData.pointerPressRaycast.gameObject.tag == "StandardCharacter" ||
+            eventData.pointerPressRaycast.gameObject.tag == "BeautifulCharacter" ||
+            eventData.pointerPressRaycast.gameObject.tag == "UglyCharacter")
+        {
+            if (following)
+            {
+                following = false;
+            }
+
+            else
+            {
+                following = true;
+            }
+        }
+
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        Debug.Log("OnPointerUp  " + eventData.pointerPressRaycast.gameObject.tag);
+
+        //if (eventData.pointerPressRaycast.gameObject.tag == "StandardCharacter" || eventData.pointerPressRaycast.gameObject.tag == "BeautifulCharacter")
+        //{
+        if (following)
+        {
+            following = false;
+        }
+        else
+        {
+            following = true;
+        }
+        //}
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("Clicked on " + eventData.pointerPressRaycast.gameObject.tag);
+        if (eventData.pointerPressRaycast.gameObject.tag == "UglyCharacter")
+        {
+            if (eventData.clickCount == 2)
+            {
+                if (eventData.pointerPressRaycast.gameObject.tag == this.gameObject.tag)
+                {
+                    DestroyUgly(destroyUglyPoints);
+                }
+
+            }
+        }
+    }
+
+
+    private void DestroyUgly(int points)
+    {
+        Destroy(this.gameObject);
+        LevelManager.UpdateScore(points);
+    }
+
+    public void MoveTowards(Vector3 target)
+    {
+        transform.position = Vector3.MoveTowards(transform.position, target, 10* moveSpeed * Time.deltaTime);
+    }
+
+    public void SetVelocity(Vector3 vel)
+    {
+        rigidbody.velocity = vel;
     }
 
 

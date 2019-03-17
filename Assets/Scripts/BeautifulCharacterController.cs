@@ -8,28 +8,88 @@ public class BeautifulCharacterController : MonoBehaviour {
     Rigidbody2D _rigidbody2D;
     [SerializeField]
     private float minDistance;
-    private float scaleDist = 5;
-
+    private float scaleDist = 3;
+    const double G = 0.667384;
+    [SerializeField]
+    private LayerMask whatIsAttracted;
+    [SerializeField]
+    private float attractFriendsRange = 60;
     void Start()
     {
         _pointEffector2D = GetComponent<PointEffector2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        minDistance = Mathf.Max(transform.localScale.x, transform.localScale.y) * scaleDist;
+        minDistance = 2*Mathf.Max(transform.lossyScale.x, transform.lossyScale.y) * scaleDist;
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    private void FixedUpdate()
     {
-        if(collision.gameObject.tag == "StandardCharacter" || collision.gameObject.tag == "UglyCharacter")
+        Collider2D[] currentCols = Physics2D.OverlapCircleAll(transform.position, attractFriendsRange, whatIsAttracted);
+        if(currentCols.Length == 0)
         {
-            if (Vector3.Distance(collision.gameObject.transform.position, transform.position) <= minDistance)
+            CharacterCreation character = GetComponent<CharacterCreation>();
+            if(character.GetInfectedTimer() > 0)
             {
-                _rigidbody2D.velocity = Vector3.zero;
-                Rigidbody2D colRb = collision.gameObject.GetComponent<Rigidbody2D>();
-                if(colRb != null)
-                {
-                    colRb.velocity = Vector3.zero;
-                }
+                character.SetTimer();
             }
         }
+        else
+        {
+            for (int col = 0; col < currentCols.Length; col++)
+            {
+                //get the offset between the objects
+                Vector3 offset = transform.position - currentCols[col].gameObject.transform.position;
+                //we're doing 2d physics, so don't want to try and apply z forces!
+                offset.z = 0;
+
+                //get the squared distance between the objects
+                float magsqr = offset.sqrMagnitude;
+
+                //check distance is more than 0 (to avoid division by 0) and then apply a gravitational force to the object
+                //note the force is applied as an acceleration, as acceleration created by gravity is independent of the mass of the object
+                Rigidbody2D rigidbody2D = currentCols[col].GetComponent<Rigidbody2D>();
+                float attraction = (float) (rigidbody2D.mass * GetComponent<Rigidbody2D>().mass);
+                //rigidbody2D.AddForce(attraction * offset.normalized / magsqr);
+               
+                if (magsqr > 0.0001f)
+                {
+                    rigidbody2D.AddForce(1000000*attraction * offset.normalized / magsqr);
+                }
+                   
+
+                //if (!(Vector2.Distance(currentCols[col].gameObject.transform.position, transform.position) <= minDistance))
+                //{
+                //    currentCols[col].GetComponent<CharacterMovementController>().MoveTowards(transform.position);
+                //    //currentCols[col].GetComponent<CharacterMovementController>().SetVelocity(Vector3.zero);
+                //}
+                //else
+                //{
+                //    currentCols[col].GetComponent<CharacterMovementController>().SetVelocity(Vector3.zero);
+                //}
+                
+            }
+        }
+       
+    }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        //if(collision.gameObject.tag == "StandardCharacter" || collision.gameObject.tag == "UglyCharacter")
+        //{
+        //    if (Vector3.Distance(collision.gameObject.transform.position, transform.position) <= minDistance)
+        //    {
+        //        _rigidbody2D.velocity = Vector3.zero;
+        //        Rigidbody2D colRb = collision.gameObject.GetComponent<Rigidbody2D>();
+        //        if(colRb != null)
+        //        {
+        //            colRb.velocity = Vector3.zero;
+        //        }
+        //    }
+        //}
+    }
+
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, attractFriendsRange);
     }
 }

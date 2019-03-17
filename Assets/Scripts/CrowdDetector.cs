@@ -25,7 +25,7 @@ public class CrowdDetector : MonoBehaviour {
 
             LevelManager.DisplayGameover("Game Over!\nOh no, too crowded! " +
                 "\nR to restart");
-            Debug.Log(currentCols.Length + " Game Over toooooo crowded broo");
+            
         }
 
         if (!hasWarnedPlayer && currentCols.Length >= WARNING_CROWD_NUMBER)

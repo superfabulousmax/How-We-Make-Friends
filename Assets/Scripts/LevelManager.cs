@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using System.IO;
 
 public class LevelManager : MonoBehaviour {
-    [SerializeField]
+
     private static UIController uiUpdater;
     private static int score = 0;
     public GameObject lastObjectSelected;
@@ -15,8 +15,9 @@ public class LevelManager : MonoBehaviour {
     public static int currentLevel = 1;
     private static int nextLevel = 2;
     private static int nextLevelScoreRequirement = 100;
-    private static int levelIncrement = 10;
+    private static int levelIncrement = 100;
     private static int totalNumberOfLevels = 4;
+    private int minScore = -100;
 
     private void Awake()
     {
@@ -44,16 +45,21 @@ public class LevelManager : MonoBehaviour {
 
     void Update()
     {
-        if(Input.GetKey(KeyCode.R))
+        if(Input.GetKeyDown(KeyCode.R))
         {
-            isGameover = false;
-            Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            Reload();
         }
 
         if(score >= nextLevelScoreRequirement)
         {
             IncreaseLevel();
+        }
+        if(!isGameover && score <= minScore)
+        {
+            Time.timeScale = 0.05f;
+            isGameover = true;
+            DisplayGameover("Game Over!\nScore too low " +
+                "\nR to restart");
         }
     }
 
@@ -80,6 +86,7 @@ public class LevelManager : MonoBehaviour {
         {
             Debug.Log("uiUpdater is null!!!!");
         }
+        Debug.Log("Game over: " + text);
         uiUpdater.DisplayGameover(text);
     }
 
@@ -109,4 +116,14 @@ public class LevelManager : MonoBehaviour {
         return col;
     }
 
+    private void Reload()
+    {
+        isGameover = false;
+        Time.timeScale = 1;
+        DisplayGameover("");
+        currentLevel = 1;
+        nextLevel = 2;
+        score = 0;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 }
