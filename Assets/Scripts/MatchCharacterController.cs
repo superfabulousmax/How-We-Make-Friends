@@ -19,6 +19,10 @@ public class MatchCharacterController : MonoBehaviour {
     public float meetFriendsRange = 6;
     public LayerMask whatIsFriends;
     private Color myColour;
+    [SerializeField]
+    private ParticleSystem matchParticles;
+    [SerializeField]
+    private Sprite beautifulMatch;
 
     void Start ()
     {
@@ -69,11 +73,7 @@ public class MatchCharacterController : MonoBehaviour {
 
         if (numberOfMatches >= 1 && connections.Count >= 1)
         {
-            Destroy(this.gameObject);
-            for(int i = 0; i < connections.Count; i ++)
-            {
-                Destroy(connections[i]);
-            }
+            Remove();   
         }
 
         for (int i = 0; i < connections.Count; i++)
@@ -86,6 +86,41 @@ public class MatchCharacterController : MonoBehaviour {
         }
     }
 
+    IEnumerator PlayThenRemove(GameObject obj)
+    {
+        Debug.Log("Here play and remve");
+        if (obj == null) yield return null;
+        string type = obj.tag;
+        Vector3 pos = obj.transform.position;
+        pos.z = 3;
+        ParticleSystem particleSystem = Instantiate(matchParticles, pos, Quaternion.identity);
+        if(type == "BeautifulCharacter")
+        {
+            particleSystem.textureSheetAnimation.SetSprite(0, beautifulMatch);
+        }
+        particleSystem.Play();
+        float t = particleSystem.main.startLifetime.constantMax + particleSystem.main.duration;
+        yield return new WaitForSeconds(2);
+        Destroy(particleSystem, t);
+        
+    }
+    private void Remove()
+    {
+        StartCoroutine(PlayThenRemove(gameObject));
+        
+        for (int i = 0; i < connections.Count; i++)
+        {
+            StartCoroutine(PlayThenRemove(connections[i]));
+        }
+
+        for (int i = 0; i < connections.Count; i++)
+        {
+            
+            Destroy(connections[i]);
+        }
+
+        Destroy(this.gameObject);
+    }
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.tag == "MatchingRadius")
@@ -145,12 +180,25 @@ public class MatchCharacterController : MonoBehaviour {
         if (!otherMatchController.connections.Contains(this.gameObject)) otherMatchController.connections.Add(this.gameObject);
         if (!this.connections.Contains(obj)) this.connections.Add(obj);
 
-        // change colour to make a group
-        this.GetComponent<SpriteRenderer>().color = myColour;
-        obj.GetComponent<SpriteRenderer>().color = myColour;
+        //// change colour to make a group
+        //this.GetComponent<SpriteRenderer>().color = myColour;
+        //obj.GetComponent<SpriteRenderer>().color = myColour;
         // Score the match
         CharacterCreation other = obj.GetComponent<CharacterCreation>();
         ScoreMatch(other);
+    }
+
+    private void LateUpdate()
+    {
+        if (connections == null || connections.Count == 0) return;
+        this.GetComponent<SpriteRenderer>().color = myColour;
+        foreach(GameObject obj in connections)
+        {
+            if(obj)
+            {
+                obj.GetComponent<MatchCharacterController>().myColour = myColour;
+            }
+        }
     }
 
     private int ScoreMatch(CharacterCreation other)

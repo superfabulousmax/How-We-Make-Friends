@@ -21,12 +21,13 @@ public class LevelManager : MonoBehaviour {
 
     private void Awake()
     {
-        allInterests = ReadInterestsToList();
-        interestColours = GenerateRandomTextColours();
+        
     }
 
     void Start()
     {
+        allInterests = ReadInterestsToList();
+        interestColours = GenerateRandomTextColours();
         uiUpdater = gameObject.GetComponent<UIController>();
         uiUpdater.UpdateTextLevel(currentLevel);
     }

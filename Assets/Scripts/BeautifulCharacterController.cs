@@ -50,42 +50,18 @@ public class BeautifulCharacterController : MonoBehaviour {
                 float attraction = (float) (rigidbody2D.mass * GetComponent<Rigidbody2D>().mass);
                 //rigidbody2D.AddForce(attraction * offset.normalized / magsqr);
                
-                if (magsqr > 0.0001f)
+                if (magsqr > 1000f) // 0.0001f)
                 {
                     rigidbody2D.AddForce(1000000*attraction * offset.normalized / magsqr);
                 }
-                   
-
-                //if (!(Vector2.Distance(currentCols[col].gameObject.transform.position, transform.position) <= minDistance))
-                //{
-                //    currentCols[col].GetComponent<CharacterMovementController>().MoveTowards(transform.position);
-                //    //currentCols[col].GetComponent<CharacterMovementController>().SetVelocity(Vector3.zero);
-                //}
-                //else
-                //{
-                //    currentCols[col].GetComponent<CharacterMovementController>().SetVelocity(Vector3.zero);
-                //}
-                
+                else
+                {
+                    rigidbody2D.velocity = Vector3.zero;
+                }
             }
         }
        
     }
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        //if(collision.gameObject.tag == "StandardCharacter" || collision.gameObject.tag == "UglyCharacter")
-        //{
-        //    if (Vector3.Distance(collision.gameObject.transform.position, transform.position) <= minDistance)
-        //    {
-        //        _rigidbody2D.velocity = Vector3.zero;
-        //        Rigidbody2D colRb = collision.gameObject.GetComponent<Rigidbody2D>();
-        //        if(colRb != null)
-        //        {
-        //            colRb.velocity = Vector3.zero;
-        //        }
-        //    }
-        //}
-    }
-
 
     void OnDrawGizmosSelected()
     {

@@ -22,6 +22,10 @@ public class CharacterMovementController : MonoBehaviour, IPointerClickHandler, 
     [SerializeField]
     private int destroyUglyPoints = 5;
     private Rigidbody2D rigidbody;
+    [SerializeField]
+    private ParticleSystem p;
+    [SerializeField]
+    private Sprite uglyDestroyParticles;
 
     // Use this for initialization
     void Start()
@@ -183,6 +187,15 @@ public class CharacterMovementController : MonoBehaviour, IPointerClickHandler, 
             {
                 if (eventData.pointerPressRaycast.gameObject.tag == this.gameObject.tag)
                 {
+                    Debug.Log("Here play and remve");
+                    Vector3 pos = transform.position;
+                    pos.z = 3;
+                    ParticleSystem particleSystem = Instantiate(p, pos, Quaternion.identity);
+                    particleSystem.textureSheetAnimation.SetSprite(0, uglyDestroyParticles);
+
+                    particleSystem.Play();
+                    float t = particleSystem.main.startLifetime.constantMax + particleSystem.main.duration;
+                    Destroy(particleSystem, t);
                     DestroyUgly(destroyUglyPoints);
                 }
 

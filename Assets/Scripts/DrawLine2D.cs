@@ -137,8 +137,6 @@ public class DrawLine2D : MonoBehaviour
         foreach (GameObject hit in hitObjects)
         {
             if (hit == this || hit == null) return;
-            Debug.Log(hit.transform.gameObject.name);
-
             //Destroy(hit);
         }
 

@@ -253,7 +253,7 @@ Transform:
   m_GameObject: {fileID: 1243674601610380}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -143.6, y: 83.7, z: 0}
-  m_LocalScale: {x: 8.0999565, y: 6.2117243, z: 1}
+  m_LocalScale: {x: 8.0999565, y: 8, z: 1}
   m_Children:
   - {fileID: 4760178265020714}
   - {fileID: 4078086062035414}
@@ -455,7 +455,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!58 &58302034996814684
 CircleCollider2D:
@@ -685,6 +685,9 @@ MonoBehaviour:
   whatIsFriends:
     serializedVersion: 2
     m_Bits: 512
+  matchParticles: {fileID: 198417259393822868, guid: b7c9fb207cee1cf4aaf93a4515d73a9c,
+    type: 2}
+  beautifulMatch: {fileID: 21300000, guid: a4949ad79b1ef2e47802133e4ae0d3e2, type: 3}
 --- !u!114 &114741761182593694
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -700,9 +703,10 @@ MonoBehaviour:
   offset: 10
   following: 0
   isSelected: 0
-  lvlManger: {fileID: 0}
   originalCol: {r: 0, g: 0, b: 0, a: 0}
   destroyUglyPoints: 5
+  p: {fileID: 0}
+  uglyDestroyParticles: {fileID: 0}
 --- !u!114 &114852193945119556
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -748,7 +752,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfMatchInterests: 2
   interestsContainer: {fileID: 1209045846049572}
-  myType: 0
+  myType: 1
   timerText: {fileID: 102905804594716906}
   collider: {fileID: 114852193945119556}
 --- !u!120 &120445096564460554
@@ -923,7 +927,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 7fe36547be8103140a5b0f36aca1c705, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c96768e4366adf745b63e99816b8e9fc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -111,6 +111,7 @@ GameObject:
   - component: {fileID: 58553092164259264}
   - component: {fileID: 120119649702037398}
   - component: {fileID: 114353379724849710}
+  - component: {fileID: 95039274223890096}
   m_Layer: 9
   m_Name: Standard Character
   m_TagString: StandardCharacter
@@ -193,8 +194,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1555305707030358}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -272.9, y: 20, z: 3}
-  m_LocalScale: {x: 10, y: 8, z: 1}
+  m_LocalPosition: {x: 33, y: 117, z: 0}
+  m_LocalScale: {x: 8, y: 8, z: 1}
   m_Children:
   - {fileID: 4371337847078856}
   - {fileID: 4892742428655800}
@@ -223,7 +224,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1038901740131856}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.05, y: 1.44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224726505363421800}
@@ -467,9 +468,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.07, y: 0.1}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 2.24
+  m_Radius: 4.19
 --- !u!58 &58748502154361450
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -485,6 +486,24 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.45
+--- !u!95 &95039274223890096
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1555305707030358}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0d4ae208eaee28c4881d8050b3f273ec, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!95 &95420813856580740
 Animator:
   serializedVersion: 3
@@ -713,6 +732,9 @@ MonoBehaviour:
   whatIsFriends:
     serializedVersion: 2
     m_Bits: 512
+  matchParticles: {fileID: 198417259393822868, guid: b7c9fb207cee1cf4aaf93a4515d73a9c,
+    type: 2}
+  beautifulMatch: {fileID: 21300000, guid: a4949ad79b1ef2e47802133e4ae0d3e2, type: 3}
 --- !u!114 &114395995123163168
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -730,6 +752,8 @@ MonoBehaviour:
   isSelected: 0
   originalCol: {r: 0, g: 0, b: 0, a: 0}
   destroyUglyPoints: 5
+  p: {fileID: 0}
+  uglyDestroyParticles: {fileID: 0}
 --- !u!120 &120119649702037398
 LineRenderer:
   m_ObjectHideFlags: 1
@@ -947,7 +971,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: c0dc23b2b4c54064ba0a8bf7494118e8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8a574fbd8c63d564e9853c55185b45c7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

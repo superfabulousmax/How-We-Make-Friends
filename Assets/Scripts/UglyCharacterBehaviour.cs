@@ -14,6 +14,14 @@ public class UglyCharacterBehaviour : MonoBehaviour
     private int numberOfGivenClicks = 0;
     public float infectFriendsRange = 6;
     public LayerMask whatIsFriends;
+    
+    private void Start()
+    {
+    }
+    private void OnDestroy()
+    {
+       
+    }
 
     private void FixedUpdate()
     {

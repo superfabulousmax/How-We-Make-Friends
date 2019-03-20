@@ -16,7 +16,9 @@ public class CharacterCreation : MonoBehaviour {
     private TextMesh timerText;
     [SerializeField]
     private CheckCollider collider;
-
+    private Animator animator;
+    private float blinkTimer = 0;
+    private float blinkTimeStep;
 
     void Start()
     {
@@ -34,7 +36,8 @@ public class CharacterCreation : MonoBehaviour {
             else interestsContainer.transform.GetChild(i).gameObject.SetActive(false);
 
         }
-        
+        animator = GetComponent<Animator>();
+        blinkTimeStep = Random.Range(5, 10);
         assignedInterests = new List<string>();
         SetRandomInterest(0);
     }
@@ -63,9 +66,25 @@ public class CharacterCreation : MonoBehaviour {
                 SetTimer();
             }
         }
+        blinkTimer += Time.deltaTime;
+        if(myType == CharacterType.Standard)
+        {
+            if(blinkTimer >= blinkTimeStep)
+            {
+                animator.SetBool("isBlinking", true);
+                StartCoroutine(BlinkThenStop());
+                blinkTimer = 0;
+                blinkTimeStep = Random.Range(3, 10);
+            }
+        }
             
     }
 
+    IEnumerator BlinkThenStop()
+    {
+        yield return new WaitForSeconds(0.5f);
+        animator.SetBool("isBlinking", false);
+    }
     public void UpdateInfectionTimer()
     {
         myInfectionTimer += Time.deltaTime;
