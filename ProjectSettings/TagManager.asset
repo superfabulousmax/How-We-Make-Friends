@@ -10,6 +10,7 @@ TagManager:
   - BeautifulCharacter
   - LineDrawer
   - UglyCharacter
+  - ProudCharacter
   layers:
   - Default
   - TransparentFX

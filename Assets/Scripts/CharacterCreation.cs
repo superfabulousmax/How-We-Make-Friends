@@ -19,9 +19,10 @@ public class CharacterCreation : MonoBehaviour {
     private Animator animator;
     private float blinkTimer = 0;
     private float blinkTimeStep;
-
+    [HideInInspector]
     void Start()
     {
+      
         lvlManager = GameObject.Find("GameManager").GetComponent<LevelManager>();
         interestTexts = new List<TextMesh>();
         numberOfMatchInterests = LevelManager.currentLevel;

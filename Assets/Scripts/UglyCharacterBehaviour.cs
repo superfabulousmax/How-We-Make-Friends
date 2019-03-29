@@ -18,6 +18,10 @@ public class UglyCharacterBehaviour : MonoBehaviour
     {
         thoughtTexts = new List<TextMesh>();
         thot.gameObject.SetActive(false);
+        if(gameObject.tag == "ProudCharacter")
+        {
+            Debug.Log(whatIsFriends.value);
+        }
     }
 
     private void FixedUpdate()
@@ -26,6 +30,10 @@ public class UglyCharacterBehaviour : MonoBehaviour
         for (int col = 0; col < currentCols.Length; col++)
         {
             CharacterCreation character = currentCols[col].GetComponent<CharacterCreation>();
+            if(character.gameObject.tag == "ProudCharacter")
+            {
+                continue;
+            }
             CheckCollider collider = character.GetCollider();
             if (collider != null)
             {
@@ -39,6 +47,7 @@ public class UglyCharacterBehaviour : MonoBehaviour
                 CharacterCreation.CreateCopyCharacter(CharacterCreation.CharacterType.Ugly, currentCols[col].gameObject, this.gameObject);
                 LevelManager.UpdateScore(-10);
                 character.SetTimer();
+
             }
         }
     }

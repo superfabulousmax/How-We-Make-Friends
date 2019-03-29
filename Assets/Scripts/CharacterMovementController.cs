@@ -185,6 +185,8 @@ public class CharacterMovementController : MonoBehaviour, IPointerClickHandler, 
 
             }
         }
+
+    
     }
 
 
