@@ -18,15 +18,16 @@ public class LevelManager : MonoBehaviour {
     private static int levelIncrement = 100;
     private static int totalNumberOfLevels = 4;
     private int minScore = -100;
-
+    [SerializeField]
+    private TextAsset textAsset;
     private void Awake()
     {
-        
+        allInterests = ReadInterestsToList();
     }
 
     void Start()
     {
-        allInterests = ReadInterestsToList();
+       
         interestColours = GenerateRandomTextColours();
         uiUpdater = gameObject.GetComponent<UIController>();
         uiUpdater.UpdateTextLevel(currentLevel);
@@ -98,12 +99,8 @@ public class LevelManager : MonoBehaviour {
 
     private string[] ReadInterestsToList()
     {
-        string path = "Assets/Resources/Interests.txt";
-        //Read the text from directly from the txt file
-        StreamReader reader = new StreamReader(path);
-        string[] lines = reader.ReadToEnd().Split('\n');
-        reader.Close();
-        Debug.Log("Reading in interests to list");
+        string[] lines = textAsset.text.Split('\n');
+   
         return lines;
     }
 

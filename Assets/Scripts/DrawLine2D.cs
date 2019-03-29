@@ -22,6 +22,7 @@ public class DrawLine2D : MonoBehaviour
     [SerializeField]
     private LayerMask whatIsObject;
     private List< GameObject> hitObjects;
+    private float offset = 30;
 
     public virtual LineRenderer lineRenderer
     {
@@ -88,6 +89,10 @@ public class DrawLine2D : MonoBehaviour
         m_Points = new List<Vector2>();
     }
 
+    private void LateUpdate()
+    {
+        
+    }
     protected virtual void Update()
     {
         if (Input.GetMouseButtonDown(mouseButton))
@@ -97,8 +102,42 @@ public class DrawLine2D : MonoBehaviour
         if (Input.GetMouseButton(mouseButton))
         {
             Vector2 mousePosition = m_Camera.ScreenToWorldPoint(Input.mousePosition);
-            if (!m_Points.Contains(mousePosition))
+            float distance = 0;
+
+            if(m_Points.Count >= 1)
             {
+                distance = Vector3.Distance(m_Points[m_Points.Count-1], mousePosition);
+            }
+            else
+            {
+                m_Points.Add(mousePosition);
+                m_LineRenderer.positionCount = m_Points.Count;
+                m_LineRenderer.SetPosition(m_LineRenderer.positionCount - 1, mousePosition);
+                if (m_EdgeCollider2D != null && m_AddCollider && m_Points.Count > 1)
+                {
+                    m_EdgeCollider2D.isTrigger = true;
+                    m_EdgeCollider2D.points = m_Points.ToArray();
+
+                }
+
+                if (currentPos < m_EdgeCollider2D.points.Length - 1)
+                {
+                    RaycastHit2D[] hits = Physics2D.LinecastAll(m_EdgeCollider2D.points[currentPos], m_EdgeCollider2D.points[currentPos + 1], whatIsObject);
+                    currentPos++;
+                    foreach (RaycastHit2D hit in hits)
+                    {
+                        if (!hitObjects.Contains(hit.transform.gameObject))
+                        {
+                            hitObjects.Add(hit.transform.gameObject);
+                        }
+                    }
+                }
+            }
+            
+            if (!m_Points.Contains(mousePosition) && distance >= offset)
+            {
+               
+                
                 m_Points.Add(mousePosition);
                 m_LineRenderer.positionCount = m_Points.Count;
                 m_LineRenderer.SetPosition(m_LineRenderer.positionCount - 1, mousePosition);
@@ -129,7 +168,12 @@ public class DrawLine2D : MonoBehaviour
             {
                 Match();
             }
+            else
+            {
+                Reset();
+            }
         }
+        m_LineRenderer.material.mainTextureScale = new Vector2(m_Points.Count, 1);
     }
 
     private void Match()
@@ -150,6 +194,7 @@ public class DrawLine2D : MonoBehaviour
                 match1.Connect(hit2);
             }
         }
+        Reset();
     }
 
     protected virtual void Reset()

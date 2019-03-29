@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class UglyCharacterBehaviour : MonoBehaviour
 {
@@ -9,18 +7,17 @@ public class UglyCharacterBehaviour : MonoBehaviour
     private float timeBtwnPointerClicks = 1.5f;
     private float clickTimer = 0f;
     private bool hasOnePointerClick = false;
-    private int numberOfRequiredClicks = 2;
-    [SerializeField]
-    private int numberOfGivenClicks = 0;
+    public static int numberOfRequiredClicks = 2;
     public float infectFriendsRange = 6;
+    private List<TextMesh> thoughtTexts;
     public LayerMask whatIsFriends;
-    
+    [SerializeField]
+    private TextMesh thot;
+
     private void Start()
     {
-    }
-    private void OnDestroy()
-    {
-       
+        thoughtTexts = new List<TextMesh>();
+        thot.gameObject.SetActive(false);
     }
 
     private void FixedUpdate()
@@ -30,7 +27,7 @@ public class UglyCharacterBehaviour : MonoBehaviour
         {
             CharacterCreation character = currentCols[col].GetComponent<CharacterCreation>();
             CheckCollider collider = character.GetCollider();
-            if(collider != null)
+            if (collider != null)
             {
                 collider.isEmpty = false;
             }
@@ -44,23 +41,22 @@ public class UglyCharacterBehaviour : MonoBehaviour
                 character.SetTimer();
             }
         }
-
-        if (hasOnePointerClick)
-        {
-            clickTimer += Time.deltaTime;
-            if(clickTimer > timeBtwnPointerClicks)
-            {
-                hasOnePointerClick = false;
-                clickTimer = 0;
-                numberOfGivenClicks = 0;
-            }
-        }
     }
 
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, infectFriendsRange);
+    }
+    void OnMouseOver()
+    {
+        Debug.Log("Why does it have ti be thus way");
+        thot.gameObject.SetActive(true);
+    }
+
+    private void OnMouseExit()
+    {
+        thot.gameObject.SetActive(false);
     }
 
 }

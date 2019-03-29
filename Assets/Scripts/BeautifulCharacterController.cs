@@ -4,21 +4,17 @@ using UnityEngine;
 
 public class BeautifulCharacterController : MonoBehaviour {
 
-    PointEffector2D _pointEffector2D;
-    Rigidbody2D _rigidbody2D;
-    [SerializeField]
-    private float minDistance;
     private float scaleDist = 3;
     const double G = 0.667384;
     [SerializeField]
     private LayerMask whatIsAttracted;
     [SerializeField]
     private float attractFriendsRange = 60;
-    void Start()
+    [SerializeField]
+    private TextMesh thot;
+    private void Start()
     {
-        _pointEffector2D = GetComponent<PointEffector2D>();
-        _rigidbody2D = GetComponent<Rigidbody2D>();
-        minDistance = 2*Mathf.Max(transform.lossyScale.x, transform.lossyScale.y) * scaleDist;
+        thot.gameObject.SetActive(false);
     }
 
     private void FixedUpdate()
@@ -61,6 +57,17 @@ public class BeautifulCharacterController : MonoBehaviour {
             }
         }
        
+    }
+
+    void OnMouseOver()
+    {
+        Debug.Log("Why does it have ti be thus way");
+        thot.gameObject.SetActive(true);
+    }
+
+    private void OnMouseExit()
+    {
+        thot.gameObject.SetActive(false);
     }
 
     void OnDrawGizmosSelected()

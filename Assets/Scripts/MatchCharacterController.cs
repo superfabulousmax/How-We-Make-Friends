@@ -13,7 +13,6 @@ public class MatchCharacterController : MonoBehaviour {
     private float offset;
     private bool rmouseClick;
     private bool thisObjSelected;
-    private bool isMatching;
     private GameObject matchStartObject;
     private GameObject currentRadiusCollision;
     public float meetFriendsRange = 6;
@@ -33,7 +32,6 @@ public class MatchCharacterController : MonoBehaviour {
         numberOfMatches = 0;
         offset = 20f;
         rmouseClick = false;
-        isMatching = false;
         thisObjSelected = false;
         myColour = Random.ColorHSV();
         while (myColour.g < 0.3)
@@ -215,13 +213,14 @@ public class MatchCharacterController : MonoBehaviour {
                     matches += 1;
                     this.numberOfMatches += 1;
                     other.gameObject.GetComponent<MatchCharacterController>().numberOfMatches += 1;
-                    score = 10;
-                    LevelManager.UpdateScore(score);
+                    score += 10;
                 }
             }
         }
+       
+        LevelManager.UpdateScore(numberOfMatches * score);
 
-        if(matches == 0)
+        if (matches == 0)
         {
             LevelManager.UpdateScore(-10);
         }

@@ -17,7 +17,6 @@ public class CharacterMovementController : MonoBehaviour, IPointerClickHandler, 
     private float CLAMP_OFFSET;
     private Vector4 HIGHLIGHT_COLOUR = new Vector4(1, 1, 0, 255);
     private Vector4 OFF_COLOUR = new Vector4(1, 1, 0, 0); // turn off alpha
-    private LevelManager lvlManger;
     public Color originalCol;
     [SerializeField]
     private int destroyUglyPoints = 5;
@@ -26,6 +25,8 @@ public class CharacterMovementController : MonoBehaviour, IPointerClickHandler, 
     private ParticleSystem p;
     [SerializeField]
     private Sprite uglyDestroyParticles;
+    [SerializeField]
+    private GameObject why;
 
     // Use this for initialization
     void Start()
@@ -38,7 +39,6 @@ public class CharacterMovementController : MonoBehaviour, IPointerClickHandler, 
         CLAMP_X = player_width / Screen.width;
         CLAMP_Y = player_height / Screen.height;
         CLAMP_OFFSET = 0.015f;
-        lvlManger = GameObject.Find("GameManager").GetComponent<LevelManager>();
         originalCol = gameObject.GetComponent<SpriteRenderer>().color;
         rigidbody = GetComponent<Rigidbody2D>();
     }
@@ -51,24 +51,6 @@ public class CharacterMovementController : MonoBehaviour, IPointerClickHandler, 
             following = false;
             return;
         }
-        //if (Input.GetMouseButtonDown(0) && ((Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).magnitude <= offset))
-        //{
-        //    if (following)
-        //    {
-        //        following = false;
-        //    }
-        //    else
-        //    {
-        //        following = true;
-        //    }
-        //}
-        //if (Input.GetMouseButtonUp(0))
-        //{
-        //    if (following)
-        //    {
-        //        following = false;
-        //    }
-        //}
         if (following)
         {
             isSelected = true;
@@ -194,6 +176,8 @@ public class CharacterMovementController : MonoBehaviour, IPointerClickHandler, 
                     particleSystem.textureSheetAnimation.SetSprite(0, uglyDestroyParticles);
 
                     particleSystem.Play();
+                    GameObject whyTho = Instantiate(why, pos, Quaternion.identity);
+                    whyTho.GetComponent<Transform>().localScale *= Random.Range(0.3f, 3f);
                     float t = particleSystem.main.startLifetime.constantMax + particleSystem.main.duration;
                     Destroy(particleSystem, t);
                     DestroyUgly(destroyUglyPoints);
